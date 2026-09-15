@@ -1,0 +1,47 @@
+{
+  "name": "stitchr",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "node --import tsx scripts/migrate.ts",
+    "db:seed": "node --import tsx scripts/seed.ts",
+    "catalog:import": "python3 scripts/import_catalog.py",
+    "format": "prettier --write src scripts tests *.ts *.json README.md",
+    "smoke": "node --import tsx scripts/smoke.ts",
+    "format:check": "prettier --check src scripts tests *.ts *.json README.md"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.0",
+    "openai": "^5.20.0",
+    "pg": "^8.16.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.25.0",
+    "@electric-sql/pglite": "^0.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "jsdom": "^30.0.1",
+    "prettier": "^3.9.6",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  },
+  "type": "module",
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
+}

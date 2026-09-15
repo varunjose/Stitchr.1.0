@@ -1,0 +1,5 @@
+node_modules
+.next
+.pglite
+package-lock.json
+data/catalog.json
