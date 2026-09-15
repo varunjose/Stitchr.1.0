@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { assertSameOrigin } from "./origin";
 export async function readBody(req: Request) {
-  const origin = req.headers.get("origin");
-  if (origin && origin !== new URL(req.url).origin)
-    throw new Error("ORIGIN_REJECTED");
+  assertSameOrigin(req);
   const text = await req.text();
   if (text.length > 50000) throw new Error("BODY_TOO_LARGE");
   return JSON.parse(text);
@@ -33,6 +32,7 @@ export function apiError(e: unknown) {
       "The tool registry is unavailable. Please retry after the database is configured.",
     BODY_TOO_LARGE: "That description is too long.",
     ORIGIN_REJECTED: "This request came from an unexpected origin.",
+    APP_ORIGIN_INVALID: "The application's public origin is misconfigured.",
   };
   console.error(
     JSON.stringify({

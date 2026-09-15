@@ -22,7 +22,7 @@ const server = spawn(
     "-p",
     "3107",
     "--hostname",
-    "127.0.0.1",
+    "0.0.0.0",
   ],
   { env, stdio: ["ignore", "pipe", "pipe"] },
 );
@@ -33,7 +33,11 @@ const base = "http://127.0.0.1:3107";
 async function post(path: string, body: unknown) {
   const res = await fetch(base + path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Origin: base,
+      "Sec-Fetch-Site": "same-origin",
+    },
     body: JSON.stringify(body),
   });
   const data = await res.json();
@@ -51,6 +55,23 @@ try {
   const page = await fetch(base).then((r) => r.text());
   if (!page.includes("What are you") || !page.includes("Local demo"))
     throw Error("Initial UI or demo disclosure absent");
+  const event = await fetch(base + "/api/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Origin: base },
+    body: JSON.stringify({ event: "onboarding_started", metadata: {} }),
+  });
+  if (event.status !== 204)
+    throw Error("Same-origin analytics request rejected");
+  const crossOrigin = await fetch(base + "/api/onboarding/analyze", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Origin: "https://untrusted.example",
+    },
+    body: JSON.stringify({ conversation: [] }),
+  });
+  if (crossOrigin.status !== 403)
+    throw Error("Cross-origin request was accepted");
   const a = await post("/api/onboarding/analyze", {
     conversation: [
       {

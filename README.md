@@ -39,6 +39,14 @@ A complete demo input:
 
 The user can keep unknown answers, edit the resulting specification, compare tools, and select a candidate manually when automatic confidence is insufficient.
 
+## Local origin checks and workspace-root warning
+
+The development server listens on `0.0.0.0`, but open the app at `http://localhost:3000`. API origin checks use the request's actual `Host` header (including its port), because Next.js can represent the internal request URL using the listener address. Requests from unrelated sites remain rejected; forwarded-host headers do not bypass this check.
+
+For a reverse proxy that changes the public host or protocol, set `APP_ORIGIN` to the exact public origin, such as `https://stitchr.example`. Leave it unset for ordinary local development. Restart Next.js after changing environment variables.
+
+The Next.js config explicitly sets `outputFileTracingRoot` to the project directory, so a `package-lock.json` in a parent folder does not change workspace-root inference. You do not need to delete that parent lockfile. See the [Next.js output configuration documentation](https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats).
+
 ## Architecture
 
 Three backend components, within one Next.js application:
